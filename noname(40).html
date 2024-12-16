@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Registration & Login</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #232526, #414345);
+      color: #fff;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    header {
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #f3a683;
+    }
+
+    .form-container, .profile-container {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.5s ease-in-out;
+      margin: 0 auto;
+      max-width: 500px;
+      backdrop-filter: blur(10px);
+    }
+
+    .form-container {
+      width: 100%;
+    }
+
+    .profile-container {
+      display: none;
+    }
+
+    input, button {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.8rem;
+      margin: 1rem 0;
+      border-radius: 5px;
+      border: 1px solid #fff;
+      font-size: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+      color: #333;
+    }
+
+    button {
+      background: #f3a683;
+      color: #333;
+      cursor: pointer;
+      transition: transform 0.3s, background 0.3s;
+    }
+
+    button:hover {
+      background: #e17055;
+      transform: scale(1.05);
+    }
+
+    .profile-pic {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin: 1rem 0;
+      object-fit: cover;
+      background-color: #ccc;
+      border: 2px solid #fff;
+    }
+
+    .profile-name {
+      font-size: 1.5rem;
+      margin: 1rem 0;
+      color: #f3a683;
+    }
+
+    .profile-info {
+      font-size: 1rem;
+      margin: 0.5rem 0;
+    }
+
+    footer {
+      margin-top: 2rem;
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Dark Mode Styles */
+    body.dark {
+      background: #121212;
+      color: #ddd;
+    }
+
+    body.dark .form-container, body.dark .profile-container {
+      background: rgba(255, 255, 255, 0.05);
+      color: #ddd;
+    }
+
+    body.dark button {
+      background: #444;
+      color: #ddd;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+
+      .form-container, .profile-container {
+        padding: 1.5rem;
+        width: 90%;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .profile-pic {
+        width: 80px;
+        height: 80px;
+      }
+
+      .profile-name {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>User Registration & Login</h1>
+    <p>Welcome! Sign up or login to access your personalized dashboard.</p>
+    <button id="toggle-dark-mode" style="margin-top: 10px;">Toggle Dark Mode</button>
+  </header>
+
+  <main>
+    <!-- Login Form -->
+    <div id="login-form" class="form-container">
+      <h2>Login Form</h2>
+      <form id="login">
+        <input type="email" id="login-email" placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+      <p>Don't have an account? <span onclick="showRegistrationForm()" style="cursor: pointer; color: #f3a683;">Sign Up</span></p>
+    </div>
+
+    <!-- Registration Form -->
+    <div id="registration-form" class="form-container" style="display: none;">
+      <h2>Registration Form</h2>
+      <form id="registration">
+        <input type="text" id="first-name" placeholder="First Name" required>
+        <input type="text" id="last-name" placeholder="Last Name" required>
+        <input type="text" id="birth-year" placeholder="Year of Birth" required>
+        <input type="email" id="user-email" placeholder="Email" required>
+        <input type="password" id="user-password" placeholder="Password (4-6 digits)" maxlength="6" required>
+        <button type="submit">Register</button>
+      </form>
+      <p>Already have an account? <span onclick="showLoginForm()" style="cursor: pointer; color: #f3a683;">Login</span></p>
+    </div>
+
+    <!-- Profile Display -->
+    <div id="profile-container" class="profile-container">
+      <h2>Your Profile</h2>
+      <img id="profile-pic" class="profile-pic" src="" alt="Profile Picture">
+      <div class="profile-name" id="profile-name"></div>
+      <div id="profile-id" class="profile-info"></div>
+      <div id="profile-email" class="profile-info"></div>
+      <div id="profile-dob" class="profile-info"></div>
+      <div id="profile-age" class="profile-info"></div>
+      <button id="logout-button">Logout</button>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2024 The Diamond Team. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Show Registration Form
+    function showRegistrationForm() {
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('registration-form').style.display = 'block';
+    }
+
+    // Show Login Form
+    function showLoginForm() {
+      document.getElementById('registration-form').style.display = 'none';
+      document.getElementById('login-form').style.display = 'block';
+    }
+
+    // Dark Mode Toggle
+    const toggleDarkModeButton = document.getElementById('toggle-dark-mode');
+    toggleDarkModeButton.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+    });
+
+    // Registration Form Submission
+    document.getElementById('registration').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const firstName = document.getElementById('first-name').value;
+      const lastName = document.getElementById('last-name').value;
+      const birthYear = document.getElementById('birth-year').value;
+      const email = document.getElementById('user-email').value;
+
+      // Calculate Age
+      const currentYear = new Date().getFullYear();
+      const age = currentYear - parseInt(birthYear);
+
+      // Save Profile Data
+      document.getElementById('profile-name').innerText = `${firstName} ${lastName}`;
+      document.getElementById('profile-id').innerText = `User ID: ${email.split('@')[0]}`;
+      document.getElementById('profile-email').innerText = `Email: ${email}`;
+      document.getElementById('profile-dob').innerText = `Year of Birth: ${birthYear}`;
+      document.getElementById('profile-age').innerText = `Age: ${age}`;
+      document.getElementById('profile-container').style.display = 'block';
+      document.getElementById('registration-form').style.display = 'none';
+    });
+
+    // Logout Button
+    document.getElementById('logout-button').addEventListener('click', () => {
+      document.getElementById('profile-container').style.display = 'none';
+      .getElementById('login-form').style.display = 'block';
+      });
+      
+      // Login Form Submission
+      document.getElementById('login').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      
+      // Example validation
+      const storedEmail = document.getElementById('profile-email').innerText.split(': ')[1];
+      const storedName = document.getElementById('profile-name').innerText;
+      
+      if (email === storedEmail) {
+      alert(`Welcome back, ${storedName}!`);
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('profile-container').style.display = 'block';
+      } else {
+      alert('Invalid credentials. Please try again.');
+      }
+      });
+      </script>
+      </body>
+      </html>
